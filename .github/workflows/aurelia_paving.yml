@@ -1,0 +1,73 @@
+# INERT EXAMPLE. Never installed/dispatched. Copy only to a script-only public repo.
+name: Aurelia world paving V4 (manual authorized CPU pilot)
+on:
+  workflow_dispatch:
+    inputs:
+      approval:
+        description: Enter APPROVED_FREE_PUBLIC_V4_PILOT after explicit owner authorization
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: aurelia-paving-pilot
+  cancel-in-progress: false
+jobs:
+  render:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.repository.private == false && inputs.approval == 'APPROVED_FREE_PUBLIC_V4_PILOT' && vars.AURELIA_PILOT_ENABLED == 'true' && vars.AURELIA_FREE_STORAGE_CONFIRMED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      AURELIA_REMOTE_EXPERIMENT: approved_v4_pilot
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce script-only public repository and authenticated Ubuntu installation
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n cloud_fallback/install_ubuntu_blender.sh
+          /usr/bin/python3 - <<'PY'
+          import subprocess
+          allowed = {'.github/workflows/aurelia_paving.yml', '.gitignore', 'README.md', 'LICENSE',
+                     'cloud_fallback/blender_seamless_experiment.py', 'cloud_fallback/qa_cloud_paving.py',
+                     'cloud_fallback/test_preparation.py', 'cloud_fallback/godot_visual_qa.gd',
+                     'cloud_fallback/paving_config.json', 'cloud_fallback/blender_download.json',
+                     'cloud_fallback/README.md', 'cloud_fallback/ubuntu_blender_package.json',
+                     'cloud_fallback/install_ubuntu_blender.sh', 'cloud_fallback/verify_ubuntu_package.py',
+                     'cloud_fallback/blender_api_preflight.py', 'cloud_fallback/test_ubuntu_preflight.py'}
+          files = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          bad = [f for f in files if f and f not in allowed]
+          assert not bad, 'Repository contains files outside reviewed script-only allowlist: '+repr(bad)
+          PY
+          /usr/bin/python3 cloud_fallback/test_ubuntu_preflight.py
+      - name: Authenticated Ubuntu Blender 4.0.2 packages only
+        shell: bash
+        run: bash cloud_fallback/install_ubuntu_blender.sh
+      - name: Verify Ubuntu Blender runtime API compatibility before rendering
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/blender --background --factory-startup --threads 2 --python-exit-code 1 \
+            --python cloud_fallback/blender_api_preflight.py -- \
+            "$GITHUB_WORKSPACE/outputs/ubuntu_blender_api_probe.json" > outputs/blender_api_probe.log 2>&1
+      - name: Layout tests and one native-resolution remote render
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 cloud_fallback/test_preparation.py
+          /usr/bin/blender --background --factory-startup --threads 2 --python-exit-code 1 \
+            --python cloud_fallback/blender_seamless_experiment.py -- \
+            --config cloud_fallback/paving_config.json --output-dir "$GITHUB_WORKSPACE/outputs" \
+            > outputs/blender_run.log 2>&1
+          /usr/bin/python3 cloud_fallback/qa_cloud_paving.py --output-dir outputs > outputs/export_run.log
+          test "$(du -sb outputs | cut -f1)" -le 26214400
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: aurelia-world-paving-v4-UNREVIEWED
+          path: outputs/
+          retention-days: 1
+          if-no-files-found: error

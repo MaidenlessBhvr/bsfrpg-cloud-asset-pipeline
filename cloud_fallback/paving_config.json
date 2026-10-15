@@ -1,0 +1,77 @@
+{
+  "algorithm": "aurelia_coursed_ashlar_v4_1",
+  "seed": 2201,
+  "cell_px": 32,
+  "chunk_px": 256,
+  "chunk_grid": [
+    3,
+    3
+  ],
+  "first_chunk": [
+    -1,
+    -1
+  ],
+  "halo_px": 2,
+  "course_height_px": [
+    18,
+    30
+  ],
+  "block_length_px": [
+    22,
+    46
+  ],
+  "joint_px": [
+    1,
+    2
+  ],
+  "palette_rgb": [
+    [
+      239,
+      229,
+      209
+    ],
+    [
+      231,
+      219,
+      196
+    ],
+    [
+      243,
+      233,
+      215
+    ],
+    [
+      226,
+      214,
+      191
+    ],
+    [
+      235,
+      225,
+      205
+    ],
+    [
+      237,
+      228,
+      215
+    ],
+    [
+      230,
+      224,
+      211
+    ],
+    [
+      244,
+      236,
+      221
+    ]
+  ],
+  "grout_rgb": [
+    205,
+    198,
+    183
+  ],
+  "decorative_inserts": "separate assets; excluded",
+  "postprocess": "native global pixel-center coverage of the same flat Blender polygons; raw render retained; no resize, offset or edge repair",
+  "scope": "nine-chunk material pilot; no production collision or geometry"
+}

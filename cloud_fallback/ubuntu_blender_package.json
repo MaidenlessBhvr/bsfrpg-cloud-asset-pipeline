@@ -1,0 +1,25 @@
+{
+  "installation_method": "Ubuntu authenticated APT repositories only",
+  "selected_upstream_version": "4.0.2",
+  "published_package_version": "4.0.2+dfsg-1ubuntu8",
+  "architecture": "amd64",
+  "ubuntu_release": "noble (24.04)",
+  "component": "universe",
+  "catalog_url": "https://packages.ubuntu.com/noble/blender",
+  "source_build_rules_url": "https://git.launchpad.net/ubuntu/+source/blender/plain/debian/rules?h=ubuntu/noble",
+  "source_build_cycles": "WITH_CYCLES=ON",
+  "repositories": [
+    "https://archive.ubuntu.com/ubuntu",
+    "https://security.ubuntu.com/ubuntu"
+  ],
+  "signed_by": "/usr/share/keyrings/ubuntu-archive-keyring.gpg",
+  "verification_chain": "signed InRelease -> authenticated Packages SHA256 -> downloaded .deb SHA256 -> pinned dpkg install",
+  "resolved_version_basis": "Official Ubuntu package catalog, reviewed 2026-10-14; not an installation on a runner",
+  "actual_runner_resolved_candidate": null,
+  "actual_runner_installed_version": null,
+  "verification_runtime": "Pending authorized job; source isolation, insecure/unauthenticated flags false, signed metadata/hash/download checks fail closed. Candidate drift aborts.",
+  "api_review": "Exact upstream v4.0.2 source supports used APIs; Ubuntu build enables Cycles; runtime probe prepared but unrun.",
+  "manual_blender_checksum_input": "Removed because no external Blender archive or binary URL is used",
+  "previous_archive_method": "Preserved in history/v4_official_archive; original failed checksum evidence retained",
+  "status": "PREFLIGHT_PREPARED_NOT_EXECUTED"
+}
